@@ -20,7 +20,6 @@ jobs:
           wget -q https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u -O ipv6.m3u
 
       - name: Commit changes
-        if: env.changed == 'yes'
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
