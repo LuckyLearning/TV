@@ -3,7 +3,7 @@ name: Create Release on Push
 on:
   push:
     branches:
-      - main  # 在 main 分支有提交时触发
+      - master  # 在 master 分支有提交时触发
 
 jobs:
   release:
