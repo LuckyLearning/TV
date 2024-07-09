@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       # 第二步：下载文件到 load 目录
-      - name: 下载 ipv6.m3u 文件
+      - name: 下载文件
         run: |
           mkdir -p load  # 确保 load 目录存在
           wget https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u -O load/ipv6.m3u  # 下载文件并重命名
@@ -26,8 +26,9 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'  # 配置 Git 用户名
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'  # 配置 Git 用户邮箱
+          cd load
           if [ -n "$(git status --porcelain)" ]; then  # 检查是否有更改
-            git add load/*  # 添加更改
+            git add .  # 添加更改
             git commit -m '每日更新 load 下文件'  # 提交更改
             git push  # 推送到远程仓库
           else
