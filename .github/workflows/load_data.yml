@@ -1,7 +1,6 @@
-name: 每日更新并提交
+name: Daily Update and Commit
 
 on:
-  # 设置定时任务，每天0点执行
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
@@ -11,27 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 第一步：拉取仓库代码
-      - name: 检出仓库代码
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 第二步：下载文件到 load 目录
-      - name: 下载文件
+      - name: Run wget to download file
         run: |
-          mkdir -p load  # 确保 load 目录存在
-          wget https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u -O load/ipv6.m3u  # 下载文件并重命名
-
-      # 第三步：提交更改
-      - name: 提交更改
-        run: |
-          git config --global user.name 'github-actions[bot]'  # 配置 Git 用户名
-          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'  # 配置 Git 用户邮箱
+          mkdir -p load
           cd load
-          if [ -n "$(git status --porcelain)" ]; then  # 检查是否有更改
-            git add .  # 添加更改
-            git commit -m '每日更新 load 下文件'  # 提交更改
-            git push  # 推送到远程仓库
-          else
-            echo "没有检测到更改，不执行提交操作。"  # 如果没有更改则不提交
+          wget https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u -O ipv6.m3u
+
+      - name: Check if file has changed
+        id: check-changes
+        run: |
+          cd load
+          git diff --quiet || echo "::set-output name=changed::true"
+
+      - name: Commit changes
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          cd load
+          git add .
+          git commit -m 'Daily update of ipv6.m3u'
+          git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub 提供的令牌进行身份验证
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
