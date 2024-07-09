@@ -13,17 +13,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Run wget to download file
+      - name: Download file
         run: |
           mkdir -p load
           cd load
-          wget https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u -O ipv6.m3u
+          wget -q https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u -O ipv6.m3u
 
       - name: Check if file has changed
         id: check-changes
         run: |
           cd load
-          git diff --quiet || echo "changed=yes" >> $GITHUB_OUTPUT
+          git diff --quiet || echo "changed=yes" >> $GITHUB_ENV
+          cat $GITHUB_ENV  # Debug: Output the environment to see if 'changed=yes' was set correctly
 
       - name: Commit changes
         if: env.changed == 'yes'
@@ -32,7 +33,8 @@ jobs:
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           cd load
           git add .
-          git commit -m 'Daily update of ipv6.m3u'
+          git commit -m 'Daily update of load'
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
