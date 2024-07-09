@@ -27,8 +27,8 @@ jobs:
           git config --global user.name 'github-actions[bot]'  # 配置 Git 用户名
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'  # 配置 Git 用户邮箱
           if [ -n "$(git status --porcelain)" ]; then  # 检查是否有更改
-            git add load/ipv6.m3u  # 添加更改
-            git commit -m '每日更新 ipv6.m3u 文件'  # 提交更改
+            git add load/*  # 添加更改
+            git commit -m '每日更新 load 下文件'  # 提交更改
             git push  # 推送到远程仓库
           else
             echo "没有检测到更改，不执行提交操作。"  # 如果没有更改则不提交
