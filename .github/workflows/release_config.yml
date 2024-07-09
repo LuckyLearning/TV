@@ -24,6 +24,8 @@ jobs:
         TIMESTAMP=$(date +'%Y%m%d%H')
         git tag $TIMESTAMP
         git push origin $TIMESTAMP
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Release
       id: create_release
