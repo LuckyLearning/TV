@@ -23,10 +23,10 @@ jobs:
         id: check-changes
         run: |
           cd load
-          git diff --quiet || echo "::set-output name=changed::true"
+          git diff --quiet || echo "changed=yes" >> $GITHUB_OUTPUT
 
       - name: Commit changes
-        if: steps.check-changes.outputs.changed == 'true'
+        if: env.changed == 'yes'
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -36,4 +36,3 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
