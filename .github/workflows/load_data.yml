@@ -24,10 +24,11 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           cd load
-          if ! git diff --quiet; then
-            git add .
+          git diff
+          git add -f .
+          if ! git diff --staged --quiet; then
             git commit -m 'Daily update of load'
-            git push
+            git push --force
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
