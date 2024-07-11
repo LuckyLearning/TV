@@ -24,7 +24,12 @@ jobs:
         run: |
           cd load
           python m3u2tvbox.py m3u/ipv6.m3u tvbox/ipv6.txt
-      
+
+      - name: merge
+        run: |
+          cd load
+          python merge_main.py
+
       - name: Commit changes
         run: |
           git config --global user.name 'github-actions[bot]'
@@ -42,7 +47,7 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=RELEASE_VERSION::$(date +%Y%m%d)
-          
+
       - name: Create or Update Release
         id: create_release
         uses: actions/create-release@v1
