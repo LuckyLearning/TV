@@ -22,6 +22,7 @@ jobs:
 
       - name: trans
         run: |
+          cd load
           python m3u2tvbox.py m3u/ipv6.m3u tvbox/ipv6.txt
       
       - name: Commit changes
