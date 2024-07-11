@@ -39,3 +39,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=RELEASE_VERSION::$(date +%Y%m%d)
+          
+      - name: Create or Update Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.RELEASE_VERSION }}
+          release_name: Release ${{ steps.get_version.outputs.RELEASE_VERSION }}
+          draft: false
+          prerelease: false
+          overwrite: true
+
