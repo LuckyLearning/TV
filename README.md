@@ -11,6 +11,9 @@ https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/local.txt
 https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/use.txt
 ```
 ```shell
+https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merge_ipv6.txt
+```
+```shell
 https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merged_output.txt
 ```
 ```shell
