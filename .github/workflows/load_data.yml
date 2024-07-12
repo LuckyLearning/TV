@@ -62,10 +62,10 @@ jobs:
 
       - name: Purge Jsdelivr Cache
         run: |
-          curl https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/fmm.txt
-          curl https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/local.txt
-          curl https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/use.txt
-          curl https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merge_ipv6.txt
-          curl https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merged_output.txt
-          curl https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/load/others_output.txt
-          curl https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/load/tvbox/ipv6.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/fmm.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/local.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/use.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merge_ipv6.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merged_output.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/others_output.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/tvbox/ipv6.txt
