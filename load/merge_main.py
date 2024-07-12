@@ -9,40 +9,9 @@ import utils
 # 定义要访问的多个URL
 urls = utils.get_urls()
 
-# 定义多个对象用于存储不同内容的行文本
-ys_lines = []  # 央视
-ws_lines = []  # 卫视
-dying_lines = []  # 电影
-dsj_lines = []  # 电视剧
-NewTV_lines = []  # NewTV
-ty_lines = []  # 体育
-cw_lines = []  # 春晚
-dy_lines = []  # 斗鱼
-hy_lines = []  # 虎牙
-bli_lines = []  # 哔哩
-dydy_lines = []  # 斗鱼电影
-dydsj_lines = []  # 斗鱼电视剧
-# 斗鱼旅行
-dylx_lines = []
-# 斗鱼综艺
-dyzy_lines = []
-# 斗鱼歌舞
-dygw_lines = []
-# 斗鱼游戏
-dyyx_lines = []
-js_lines = []  # 解说
-# BESTV
-bestv_lines = []
-cetv_lines = []  # CETV
-cgtn_lines = []  # CGTN
-tvbs_lines = []  # TVBS
-chc_lines = []  # CHC
-gb_lines = []  # 广播
-
-all_lines = []
-other_lines = []
-
 channel_info = {}
+channel = {}
+channel_ipv6 = {}
 
 
 def process_url(url):
@@ -73,119 +42,189 @@ def process():
 	print(f"size: {len(channel_info)}")
 	for channel_name, channel_addresses in channel_info.items():
 		if channel_name.startswith("CCTV") and not "K" in channel_name and not "COM" in channel_name:
+			if "央视频道,#genre#" not in channel:
+				channel["央视频道,#genre#"] = []
 			for channel_address in channel_addresses:
-				ys_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["央视频道,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "卫视" in channel_name:
+			if "卫视频道,#genre#" not in channel:
+				channel["卫视频道,#genre#"] = []
 			for channel_address in channel_addresses:
-				ws_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["卫视频道,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.startswith("NEWTV"):
+			if "NewTV频道,#genre#" not in channel:
+				channel["NewTV频道,#genre#"] = []
 			for channel_address in channel_addresses:
-				NewTV_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["NewTV频道,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.startswith("CETV"):
+			if "CETV频道,#genre#" not in channel:
+				channel["CETV频道,#genre#"] = []
 			for channel_address in channel_addresses:
-				cetv_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["CETV频道,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.startswith("CGTN"):
+			if "CGTN频道,#genre#" not in channel:
+				channel["CGTN频道,#genre#"] = []
 			for channel_address in channel_addresses:
-				cgtn_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["CGTN频道,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.startswith("TVBS"):
+			if "TVBS频道,#genre#" not in channel:
+				channel["TVBS频道,#genre#"] = []
 			for channel_address in channel_addresses:
-				tvbs_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["TVBS频道,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.startswith("CHC"):
+			if "CHC频道,#genre#" not in channel:
+				channel["CHC频道,#genre#"] = []
 			for channel_address in channel_addresses:
-				chc_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["CHC频道,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.startswith("BESTV"):
+			if "BESTV频道,#genre#" not in channel:
+				channel["BESTV频道,#genre#"] = []
 			for channel_address in channel_addresses:
-				bestv_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["BESTV频道,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "体育" in channel_name:
+			if "体育频道,#genre#" not in channel:
+				channel["体育频道,#genre#"] = []
 			for channel_address in channel_addresses:
-				ty_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["体育频道,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "春晚" in channel_name:
+			if "春晚频道,#genre#" not in channel:
+				channel["春晚频道,#genre#"] = []
 			for channel_address in channel_addresses:
-				cw_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["春晚频道,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.startswith("斗鱼电影"):
+			if "斗鱼电影,#genre#" not in channel:
+				channel["斗鱼电影,#genre#"] = []
 			for channel_address in channel_addresses:
-				dydy_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["斗鱼电影,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.startswith("斗鱼电视剧"):
+			if "斗鱼电视剧,#genre#" not in channel:
+				channel["斗鱼电视剧,#genre#"] = []
 			for channel_address in channel_addresses:
-				dydsj_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["斗鱼电视剧,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "斗鱼综艺" in channel_name:
+			if "斗鱼综艺,#genre#" not in channel:
+				channel["斗鱼综艺,#genre#"] = []
 			for channel_address in channel_addresses:
-				dyzy_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["斗鱼综艺,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "斗鱼旅行" in channel_name:
+			if "斗鱼旅行,#genre#" not in channel:
+				channel["斗鱼旅行,#genre#"] = []
 			for channel_address in channel_addresses:
-				dylx_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["斗鱼旅行,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "斗鱼游戏" in channel_name:
+			if "斗鱼游戏,#genre#" not in channel:
+				channel["斗鱼游戏,#genre#"] = []
 			for channel_address in channel_addresses:
-				dyyx_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["斗鱼游戏,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "斗鱼歌舞" in channel_name:
+			if "斗鱼歌舞,#genre#" not in channel:
+				channel["斗鱼歌舞,#genre#"] = []
 			for channel_address in channel_addresses:
-				dygw_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["斗鱼歌舞,#genre#"].append(
+					(channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "斗鱼" in channel_name:
+			if "斗鱼,#genre#" not in channel:
+				channel["斗鱼,#genre#"] = []
 			for channel_address in channel_addresses:
-				dy_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["斗鱼,#genre#"].append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "虎牙" in channel_name:
+			if "虎牙,#genre#" not in channel:
+				channel["虎牙,#genre#"] = []
 			for channel_address in channel_addresses:
-				hy_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["虎牙,#genre#"].append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.startswith("「B站」"):
+			if "B站,#genre#" not in channel:
+				channel["B站,#genre#"] = []
 			for channel_address in channel_addresses:
-				bli_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["B站,#genre#"].append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.startswith("解说"):
+			if "解说,#genre#" not in channel:
+				channel["解说,#genre#"] = []
 			for channel_address in channel_addresses:
-				js_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["解说,#genre#"].append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "电影" in channel_name:
+			if "电影,#genre#" not in channel:
+				channel["电影,#genre#"] = []
 			for channel_address in channel_addresses:
-				dying_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["电影,#genre#"].append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif "电视剧" in channel_name:
+			if "电视剧,#genre#" not in channel:
+				channel["电视剧,#genre#"] = []
 			for channel_address in channel_addresses:
-				dsj_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["电视剧,#genre#"].append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		elif channel_name.endswith("广播"):
+			if "广播,#genre#" not in channel:
+				channel["广播,#genre#"] = []
 			for channel_address in channel_addresses:
-				gb_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["广播,#genre#"].append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 		else:
+			if "其他,#genre#" not in channel:
+				channel["其他,#genre#"] = []
 			for channel_address in channel_addresses:
-				other_lines.append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
+				channel["其他,#genre#"].append((channel_name + "," + channel_address, utils.is_ipv6(channel_address)))
 
 
 def get_all_lines():
-	global all_lines
-	version = datetime.now().strftime("%Y%m%d") + ",url"
-	all_lines = ["更新时间,#genre#"] + [version] + ['\n'] + \
-	            ["央视频道,#genre#"] + sorted(utils.sort_channels_cctv(ys_lines),
-	                                          key=lambda x: utils.extract_number(x)) + ['\n'] + \
-	            ["卫视频道,#genre#"] + utils.sort_channels_ws(ws_lines) + ['\n'] + \
-	            ["电影频道,#genre#"] + utils.sort_channels(dying_lines) + ['\n'] + \
-	            ["电视剧频道,#genre#"] + utils.sort_channels(dsj_lines) + ['\n'] + \
-	            ["体育频道,#genre#"] + utils.sort_channels(ty_lines) + ['\n'] + \
-	            ["NewTV,#genre#"] + utils.sort_channels(NewTV_lines) + ['\n'] + \
-	            ["CETV,#genre#"] + utils.sort_channels(cetv_lines) + ['\n'] + \
-	            ["CGTN,#genre#"] + utils.sort_channels(cgtn_lines) + ['\n'] + \
-	            ["TVBS,#genre#"] + utils.sort_channels(tvbs_lines) + ['\n'] + \
-	            ["CHC,#genre#"] + utils.sort_channels(chc_lines) + ['\n'] + \
-	            ["Bestv,#genre#"] + utils.sort_channels(bestv_lines) + ['\n'] + \
-	            ["春晚,#genre#"] + utils.sort_channels(cw_lines) + ['\n'] + \
-	            ["斗鱼电影,#genre#"] + utils.sort_channels(dydy_lines) + ['\n'] + \
-	            ["斗鱼电视剧,#genre#"] + utils.sort_channels(dydsj_lines) + ['\n'] + \
-	            ["斗鱼综艺,#genre#"] + utils.sort_channels(dyzy_lines) + ['\n'] + \
-	            ["斗鱼旅行,#genre#"] + utils.sort_channels(dylx_lines) + ['\n'] + \
-	            ["斗鱼游戏,#genre#"] + utils.sort_channels(dyyx_lines) + ['\n'] + \
-	            ["斗鱼歌舞,#genre#"] + utils.sort_channels(dygw_lines) + ['\n'] + \
-	            ["斗鱼,#genre#"] + utils.sort_channels(dy_lines) + ['\n'] + \
-	            ["虎牙,#genre#"] + utils.sort_channels(hy_lines) + ['\n'] + \
-	            ["哔哩哔哩,#genre#"] + utils.sort_channels(bli_lines) + ['\n'] + \
-	            ["解说,#genre#"] + utils.sort_channels(js_lines) + ['\n'] + \
-	            ["广播,#genre#"] + utils.sort_channels(gb_lines)
+	for group in channel:
+		group_lines = channel[group]
+		if group == "央视频道,#genre#":
+			channel[group] = sorted(utils.sort_channels_cctv(group_lines),
+			                        key=lambda x: utils.extract_number(x))
+			channel_ipv6[group] = sorted(utils.sort_channels_cctv_ipv6(group_lines),
+			                             key=lambda x: utils.extract_number(x))
+		elif group == "卫视频道,#genre#":
+			channel[group] = utils.sort_channels_ws(group_lines)
+			channel_ipv6[group] = utils.sort_channels_ws_ipv6(group_lines)
+		else:
+			channel[group] = utils.sort_channels(group_lines)
+			channel_ipv6[group] = utils.sort_channels_ipv6(group_lines)
 
 
 def save_to_file(output_file, others_file):
 	try:
 		# 写入合并的文本到 output_file
 		with open(output_file, 'w', encoding='utf-8') as f:
-			for line in all_lines:
-				f.write(line + '\n')
+			for group in channel:
+				if group != "其他,#genre#":
+					group_lines = channel[group]
+					if len(group_lines) == 0:
+						continue
+					f.write(group + '\n')
+					for line in group_lines:
+						f.write(line + '\n')
+				f.write('\n')
 		print(f"合并后的文本已保存到文件: {output_file}")
 
+		with open("merge_ipv6.txt", 'w', encoding='utf-8') as f:
+			for group in channel_ipv6:
+				if group != "其他,#genre#":
+					group_lines = channel_ipv6[group]
+					if len(group_lines) == 0:
+						continue
+					f.write(group + '\n')
+					for line in group_lines:
+						f.write(line + '\n')
+				f.write('\n')
+		print(f"合并后的文本已保存到文件: merge_ipv6.txt")
+
 		with open(others_file, 'w', encoding='utf-8') as f:
-			for line, ipv6 in other_lines:
+			f.write("其他,#genre#" + '\n')
+			for line in channel.get("其他,#genre#", []):
 				f.write(line + '\n')
 			print(f"已保存到文件: {others_file}")
 
