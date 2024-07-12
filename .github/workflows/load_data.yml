@@ -60,3 +60,11 @@ jobs:
           prerelease: false
           overwrite: true
 
+      - name: Purge Jsdelivr Cache
+        run: |
+          result=$(curl -s https://purge.jsdelivr.net/gh/${{ github.actor }}/TV@latest/)
+          if echo $result |grep -q 'success.*true'; then
+            echo "jsdelivr缓存更新成功"
+          else
+            echo $result
+          fi
