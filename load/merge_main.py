@@ -181,7 +181,7 @@ def process():
 
 def get_all_lines():
 	for group in channel:
-		group_lines = channel[group]
+		group_lines = list(set(channel[group]))
 		if group == "央视频道,#genre#":
 			channel[group] = sorted(utils.sort_channels_cctv(group_lines),
 			                        key=lambda x: utils.extract_number(x))
@@ -276,6 +276,17 @@ def cpoy_file(output_file, other_file):
 		print(f"错误: '{other_file}' 未找到。")
 	except PermissionError:
 		print(f"错误: 拒绝复制 '{other_file}' 的权限。")
+	except Exception as e:
+		print(f"发生错误: {e}")
+
+	try:
+		# 复制文件并重命名
+		shutil.copy("merge_ipv6.txt", "../local.txt")
+		print(f"文件 merge_ipv6.txt 复制并重命名为 local.txt' 在 ../ 中。")
+	except FileNotFoundError:
+		print(f"错误: merge_ipv6.txt 未找到。")
+	except PermissionError:
+		print(f"错误: 拒绝复制 merge_ipv6.txt 的权限。")
 	except Exception as e:
 		print(f"发生错误: {e}")
 
