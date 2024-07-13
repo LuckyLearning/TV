@@ -69,3 +69,4 @@ jobs:
           curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merged_output.txt
           curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/others_output.txt
           curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/tvbox/ipv6.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merged_output.m3u
