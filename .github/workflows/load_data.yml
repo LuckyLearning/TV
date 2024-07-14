@@ -13,18 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download file
-        run: |
-          mkdir -p load/m3u
-          mkdir -p load/tvbox
-          cd load
-          wget -q https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u -O m3u/ipv6.m3u
-
-      - name: trans
-        run: |
-          cd load
-          python m3u2tvbox.py m3u/ipv6.m3u tvbox/ipv6.txt
-
       - name: merge
         run: |
           cd load
@@ -34,7 +22,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          cd load
+#          cd load
           git diff
           git add -f .
           if ! git diff --staged --quiet; then

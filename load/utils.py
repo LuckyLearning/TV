@@ -83,6 +83,13 @@ def extract_number(s):
 	else:
 		return abs(hash(caption))
 
+def sort_group(group_name):
+	if group_name.startswith('央视频道'):
+		return (0, group_name)  # '央视频道' 排在最前面
+	elif group_name.startswith('卫视频道'):
+		return (1, group_name)
+	return (2, group_name)  # 其他项按默认顺序排列
+
 
 def sort_channels_cctv(channels):
 	ipv6_channels = [c for c in channels if c[1]]

@@ -1,9 +1,9 @@
-import os.path
-import shutil
+import re
 import sys
 import urllib.request
-from datetime import datetime
 
+import copy_utils
+import trans_utils
 import utils
 
 # 定义要访问的多个URL
@@ -35,10 +35,43 @@ def process_url(url):
 		print(f"处理URL时发生错误：{e}")
 
 
+def process_url_m3u(url):
+	try:
+		with urllib.request.urlopen(url) as response:
+			data = response.read()
+			text = data.decode('utf-8')
+			lines = text.split('\n')
+			for line in lines:
+				line = line.strip()
+				if line.startswith('#EXTINF'):
+					match = re.search(r'tvg-name="([^"]+)"', line)
+					if match:
+						channel_name = match.group(1)
+					else:
+						match = re.search(r'tvg-id="([^"]+)"', line)
+						if match:
+							channel_name = match.group(1)
+						else:
+							channel_name = line.split(',')[-1].strip()
+					channel_name = utils.process_part(channel_name.upper())
+					if channel_name not in channel_info:
+						channel_info[channel_name] = []
+				elif line and not line.startswith('#'):
+					channel_url = line
+					channel_info[channel_name].append(channel_url)
+	except Exception as e:
+		print(f"处理URL时发生错误：{e}")
+
+
 def process():
 	for url in urls:
 		print(f"处理URL: {url}")
-		process_url(url)
+		if url.endswith(".m3u"):
+			print(f"处理m3u文件: {url}")
+			process_url_m3u(url)
+		else:
+			print(f"处理非m3u文件: {url}")
+			process_url(url)
 	print(f"size: {len(channel_info)}")
 	for channel_name, channel_addresses in channel_info.items():
 		if channel_name.startswith("CCTV") and not "K" in channel_name and not "COM" in channel_name:
@@ -180,7 +213,8 @@ def process():
 
 
 def get_all_lines():
-	for group in channel:
+	sorted_key = sorted(channel.keys(), key=utils.sort_group)
+	for group in sorted_key:
 		group_lines = list(set(channel[group]))
 		if group == "央视频道,#genre#":
 			channel[group] = sorted(utils.sort_channels_cctv(group_lines),
@@ -232,96 +266,6 @@ def save_to_file(output_file, others_file):
 		print(f"保存文件时发生错误：{e}")
 
 
-def cpoy_file(output_file, other_file):
-	path_to_check = "merge"
-	if not os.path.exists(path_to_check):
-		# 如果路径不存在，则创建路径
-		os.makedirs(path_to_check)
-		print(f"路径 '{path_to_check}' 创建成功。")
-	else:
-		print(f"路径 '{path_to_check}' 已经存在。")
-
-	# 获取当前日期
-	current_date = datetime.now()
-	# 格式化日期为 yyyy_mm_dd_
-	formatted_date = current_date.strftime('%Y_%m_%d')
-
-	# 获取源文件名和扩展名
-	file_name1, file_ext1 = os.path.splitext(os.path.basename(output_file))
-	file_name2, file_ext2 = os.path.splitext(os.path.basename(other_file))
-
-	# 构建新文件名
-	new_output_file = f"{formatted_date}_{file_name1}{file_ext1}"
-	new_other_file = f"{formatted_date}_{file_name2}{file_ext2}"
-
-	# 构建目标文件路径
-	destination_output_file = os.path.join(path_to_check, new_output_file)
-	destination_other_file = os.path.join(path_to_check, new_other_file)
-
-	try:
-		# 复制文件并重命名
-		shutil.copy(output_file, destination_output_file)
-		print(f"文件 '{output_file}' 复制并重命名为 '{new_output_file}' 在 '{path_to_check}' 中。")
-	except FileNotFoundError:
-		print(f"错误: '{output_file}' 未找到。")
-	except PermissionError:
-		print(f"错误: 拒绝复制 '{output_file}' 的权限。")
-	except Exception as e:
-		print(f"发生错误: {e}")
-
-	try:
-		shutil.copy(other_file, destination_other_file)
-		print(f"文件 '{other_file}' 复制并重命名为 '{new_other_file}' 在 '{path_to_check}' 中。")
-	except FileNotFoundError:
-		print(f"错误: '{other_file}' 未找到。")
-	except PermissionError:
-		print(f"错误: 拒绝复制 '{other_file}' 的权限。")
-	except Exception as e:
-		print(f"发生错误: {e}")
-
-	try:
-		# 复制文件并重命名
-		shutil.copy("merge_ipv6.txt", "../local.txt")
-		print(f"文件 merge_ipv6.txt 复制并重命名为 local.txt' 在 ../ 中。")
-	except FileNotFoundError:
-		print(f"错误: merge_ipv6.txt 未找到。")
-	except PermissionError:
-		print(f"错误: 拒绝复制 merge_ipv6.txt 的权限。")
-	except Exception as e:
-		print(f"发生错误: {e}")
-
-def trans2m3u(tvbox_file):
-	file_name, file_ext = os.path.splitext(os.path.basename(output_file))
-	m3u_file = f"{file_name}.m3u"
-	with open(tvbox_file, 'r', encoding="utf-8") as f:
-		lines = f.readlines()
-
-	channels = {}
-	current_genre = None
-
-	# Parse the tvbox file
-	for line in lines:
-		line = line.strip()
-		if line.endswith('#genre#'):
-			current_genre = line.split(',')[0]
-		elif line:
-			channel_name, channel_url = line.split(',')
-			if current_genre not in channels:
-				channels[current_genre] = []
-			channels[current_genre].append((channel_name, channel_url))
-
-	# Generate the m3u playlist
-	with open(m3u_file, 'w', encoding="utf-8") as f:
-		for genre, channel_list in channels.items():
-			f.write("#EXTM3U\n")
-			for channel_name, channel_url in channel_list:
-				f.write(
-					'#EXTINF:-1 tvg-name="{channel_name}" group-title="{genre}",{channel_name}\n{channel_url}\n'.format(
-						channel_name=channel_name, genre=genre, channel_url=channel_url))
-			f.write('\n')
-
-	print('Conversion complete. The m3u playlist has been saved as', m3u_file)
-
 if __name__ == '__main__':
 	arguments = sys.argv
 	if len(arguments) == 1:
@@ -336,5 +280,7 @@ if __name__ == '__main__':
 	process()
 	get_all_lines()
 	save_to_file(output_file, other_file)
-	cpoy_file(output_file, other_file)
-	trans2m3u(output_file)
+
+	copy_utils.cpoy_file(output_file, other_file)
+	copy_utils.copy_source_2_target("merge_ipv6.txt", "../local.txt")
+	trans_utils.trans2m3u(output_file)
