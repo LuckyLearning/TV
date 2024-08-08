@@ -87,7 +87,7 @@ def main(source_file_path, output_file_path, max_workers=8):
 if __name__ == "__main__":
     # 总耗时
     start_time = time.time()
-    source_file_path = 'merged_output.txt'  # 替换为你的源文件路径
+    source_file_path = 'merge_ipv6.txt'  # 替换为你的源文件路径
     output_file_path = '有效源'  # 替换为你的输出文件路径
     main(source_file_path, output_file_path, 4)
     end_time = time.time()
