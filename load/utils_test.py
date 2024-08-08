@@ -1,41 +1,55 @@
-import cv2
-import threading
+import subprocess
+import json
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from queue import Queue
 
-# 函数：获取视频分辨率
-def get_video_resolution(video_path, timeout=13):
-    cap = cv2.VideoCapture(video_path)
-    if not cap.isOpened():
-        return None
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    cap.release()
-    return (width, height)
+# 函数：使用 ffprobe 获取视频分辨率
+def get_video_resolution_ffprobe(channel_name, video_path, timeout=13):
+    try:
+        # 调用 ffprobe 获取视频信息
+        command = [
+            'ffprobe', '-v', 'error', '-select_streams', 'v:0',
+            '-show_entries', 'stream=width,height',
+            '-of', 'json', video_path
+        ]
+        result = subprocess.run(command, capture_output=True, text=True, timeout=timeout, check=True)
+        info = json.loads(result.stdout)
+
+        if 'streams' in info and len(info['streams']) > 0:
+            width = info['streams'][0]['width']
+            height = info['streams'][0]['height']
+            return (width, height), False
+        return None, True
+    except subprocess.CalledProcessError as e:
+        print(f"Channel '{channel_name}'-'{video_path}'\nError while processing video with ffprobe: {e}")
+        return None, True
+    except subprocess.TimeoutExpired:
+        print(f"Channel '{channel_name}'-'{video_path}'\nTimeout while processing video with ffprobe.")
+        return None, True
 
 # 函数：处理每一行
-def process_line(line, order_list, valid_count, invalid_count, total_lines):
+def process_line(line):
     parts = line.strip().split(',')
     if '#genre#' in line:
         # 如果行包含 '#genre#'，直接写入新文件
-        return line, None, None
+        return line, None, None, False
     elif len(parts) == 2:
         channel_name, channel_url = parts
-        resolution = get_video_resolution(channel_url, timeout=5)
-        if resolution and resolution[1] >= 540:  # 检查分辨率是否大于等于720p
-            order_list.append((channel_name, resolution[1], channel_url))
-            valid_count[0] += 1
-            return f"{channel_name}[{resolution[1]}p],{channel_url}\n", channel_name, resolution[1]
+
+        resolution, timeout = get_video_resolution_ffprobe(channel_name, channel_url, timeout=5)
+        if timeout:
+            return channel_url, channel_name, None, True
+        elif resolution and resolution[1] > 720:  # 检查分辨率是否大于720p
+            return f"{channel_name}[{resolution[1]}p],{channel_url}\n", channel_name, resolution[1], False
         else:
-            invalid_count[0] += 1
-    return None, None, None
+            return f"Channel '{channel_name}' has resolution {resolution[1]}p which is less than 720p.\n", channel_name, resolution[1], False
+    return None, None, None, False
 
 # 主函数
-def main(source_file_path, output_file_path):
+def main(source_file_path, output_file_path, max_workers=8):
     order_list = []
     valid_count = [0]
     invalid_count = [0]
-    task_queue = Queue()
 
     # 读取源文件
     with open(source_file_path, 'r', encoding='utf-8') as source_file:
@@ -43,27 +57,38 @@ def main(source_file_path, output_file_path):
 
     total_lines = len(lines)
 
-    with open(output_file_path + '.txt', 'w', encoding='utf-8') as output_file:
-        # 创建线程池
-        with ThreadPoolExecutor(max_workers=32) as executor:
-            futures = [executor.submit(process_line, line, order_list, valid_count, invalid_count, total_lines) for line in lines]
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = [executor.submit(process_line, line) for line in lines]
 
+        with open(output_file_path + '.txt', 'w', encoding='utf-8') as output_file:
             for future in as_completed(futures):
-                result, channel_name, resolution = future.result()
-                if result:
-                    output_file.write(result)
-                    if channel_name and resolution:
-                        print(f"Channel '{channel_name}' accepted with resolution {resolution}p.")
+                result, channel_name, resolution, timeout = future.result()
+                if timeout:
+                    print(f"Channel '{channel_name}-{result}' connection timed out or URL is invalid.")
+                    invalid_count[0] += 1
+                elif result:
+                    if resolution and resolution > 720:
+                        output_file.write(result)
+                        print(f"Channel '{channel_name}'-'{result}' accepted with resolution {resolution}p.")
+                        valid_count[0] += 1
+                    else:
+                        print(result)  # 打印分辨率小于720p的提示信息
                 print(f"有效: {valid_count[0]}, 无效: {invalid_count[0]}, 总数: {total_lines}, 进度: {(valid_count[0] + invalid_count[0]) / total_lines * 100:.2f}%")
 
+    # 全量打印结果
     with open(output_file_path + '.txt', 'r', encoding='utf-8') as output_file:
-        lines = output_file.readlines()
-        for line in lines:
-            print(line)
+        all_lines = output_file.readlines()
+        print("\n--- 全部结果 ---")
+        for line in all_lines:
+            print(line.strip())
 
     print(f"任务完成，有效频道数：{valid_count[0]}, 无效频道数：{invalid_count[0]}, 总频道数：{total_lines}")
 
 if __name__ == "__main__":
+    # 总耗时
+    start_time = time.time()
     source_file_path = 'merged_output.txt'  # 替换为你的源文件路径
-    output_file_path = 'merged_output-有效源'  # 替换为你的输出文件路径
-    main(source_file_path, output_file_path)
+    output_file_path = '有效源'  # 替换为你的输出文件路径
+    main(source_file_path, output_file_path, 4)
+    end_time = time.time()
+    print(f"总耗时：{end_time - start_time}秒")
