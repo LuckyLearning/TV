@@ -281,6 +281,6 @@ if __name__ == '__main__':
 	get_all_lines()
 	save_to_file(output_file, other_file)
 
-	copy_utils.cpoy_file(output_file, other_file)
+	copy_utils.cpoy_file(output_file, other_file, 30)
 	copy_utils.copy_source_2_target("merge_ipv6.txt", "../local.txt")
 	trans_utils.trans2m3u(output_file)
