@@ -1,4 +1,4 @@
-name: Daily Update and Commit
+name: 更新源并tag
 
 on:
   schedule:
