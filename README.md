@@ -5,6 +5,9 @@
 https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/fmm.txt
 ```
 ```shell
+https://ghproxy.cc/https://raw.githubusercontent.com/LuckyLearning/TV/master/local.txt
+```
+```shell
 https://cdn.jsdelivr.net/gh/LuckyLearning/TV@latest/local.txt
 ```
 ```shell
