@@ -1,0 +1,57 @@
+name: 手动更新源并tag
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: merge
+        run: |
+          cd load
+          python merge_main.py
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git diff
+          git add -f .
+          if ! git diff --staged --quiet; then
+            git commit -m 'Daily update of load'
+            git push --force
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=RELEASE_VERSION::$(date +%Y%m%d)
+
+      - name: Create or Update Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.RELEASE_VERSION }}
+          release_name: Release ${{ steps.get_version.outputs.RELEASE_VERSION }}
+          draft: false
+          prerelease: false
+          overwrite: true
+
+      - name: Purge Jsdelivr Cache
+        run: |
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/fmm.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/local.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/use.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merge_ipv6.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merged_output.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/others_output.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/tvbox/ipv6.txt
+          curl https://purge.jsdelivr.net/gh/LuckyLearning/TV@latest/load/merged_output.m3u
