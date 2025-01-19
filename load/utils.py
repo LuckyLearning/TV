@@ -99,6 +99,11 @@ def sort_channels_cctv(channels):
 		                                                                                     x[0]))
 	return [c[0] for c in sorted_channels]
 
+def sort_channels_cctv_not_ipv6(channels):
+	ipv6_channels = [c for c in channels if not c[1]]
+	sorted_channels = sorted(ipv6_channels, key=lambda x: extract_number(x[0]))
+	return [c[0] for c in sorted_channels]
+
 def sort_channels_cctv_ipv6(channels):
 	ipv6_channels = [c for c in channels if c[1]]
 	sorted_channels = sorted(ipv6_channels, key=lambda x: extract_number(x[0]))
@@ -116,6 +121,11 @@ def sort_channels_ipv6(channels):
 
 def sort_channels_ws(channels):
 	ipv6_channels = [c for c in channels if c[1]]
+	sorted_channels = sorted(ipv6_channels, key=lambda x: extract_number(x[0]))
+	return [c[0] for c in sorted_channels]
+
+def sort_channels_ws_not_ipv6(channels):
+	ipv6_channels = [c for c in channels if not c[1]]
 	sorted_channels = sorted(ipv6_channels, key=lambda x: extract_number(x[0]))
 	return [c[0] for c in sorted_channels]
 
