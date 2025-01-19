@@ -37,6 +37,8 @@ def trans2m3u(tvbox_file):
 	# Parse the tvbox file
 	for line in lines:
 		line = line.strip()
+		if line.startswith("最后更新"):
+			continue
 		if line.endswith('#genre#'):
 			current_genre = line.split(',')[0]
 		elif line:
