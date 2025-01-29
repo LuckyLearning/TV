@@ -126,6 +126,7 @@ def save_to_file(output_file):
                 f.write(group + '\n')
                 for line in group_lines:
                     f.write(line + '\n')
+                f.write('\n')
             f.write('\n')
             # 写入更新日期作为新的频道组名
             f.write(f"更新时间: {current_time},#genre#\n")
