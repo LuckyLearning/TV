@@ -42,7 +42,11 @@ def trans2m3u(tvbox_file):
 		if line.endswith('#genre#'):
 			current_genre = line.split(',')[0]
 		elif line:
-			channel_name, channel_url = line.split(',')
+			try:
+				channel_name, channel_url = line.split(',')
+			except ValueError:
+				print(f"格式错误的行: {line}")
+				continue
 			if current_genre not in channels:
 				channels[current_genre] = []
 			channels[current_genre].append((channel_name, channel_url))
