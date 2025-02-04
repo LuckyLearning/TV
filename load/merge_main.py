@@ -316,5 +316,5 @@ if __name__ == '__main__':
     save_to_file(output_file, other_file)
 
     copy_utils.cpoy_file(output_file, other_file, 30)
-    copy_utils.copy_source_2_target(output_file, "../local.txt")
+    copy_utils.copy_source_2_target(output_file, "../local1.txt")
     trans_utils.trans2m3u(output_file)
